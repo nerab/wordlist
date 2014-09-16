@@ -25,13 +25,11 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <p>
-          This is an extraction of Oren Tirosh's
+          This is an extraction of <%= @wordlist['author']['name']%>'s
 
-          
-            <a href="http://web.archive.org/web/20091003023412/http://tothink.com/mnemonic/wordlist.txt">words.txt</a>
-          
-            <a href="http://web.archive.org/web/20091003023412/http://tothink.com/mnemonic/rejects.txt">rejects.txt</a>
-          
+          <% @wordlist['sources'].each do |src| %>
+            <a href="<%= src.last %>"><%= src.first %></a>
+          <% end %>
 
           into several machine-consumable formats. The <a href="https://raw.githubusercontent.com/nerab/wordlist/master/src/wordlist.json">JSON source</a> was created by extracting and cleaning the original files.
         </p>
@@ -40,18 +38,18 @@
       <section id="downloads">
         <h1 id="project_title">Downloads</h1>
         <ul>
-        
+        <% @downloads.each do |download| %>
+          <li><a href="<%= download.url %>">Download <%= download.title %></a></li>
+        <% end %>
         </ul>
       </section>
 
       <section id="stats" class="inner">
-        <p>It is based on version 0.732. There are
+        <p>It is based on version <%= @wordlist['version'] %>. There are
 
-          
-            1633 words in words.txt,
-          
-            568 words in rejects.txt,
-          
+          <% @wordlist['sources'].each do |src| %>
+            <%= @wordlist[src.first].size %> words in <%= src.first %>,
+          <% end %>
 
         </p>
 

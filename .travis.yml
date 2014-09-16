@@ -1,0 +1,9 @@
+language: ruby
+script:
+- rake deploy
+branches:
+  only:
+  - master
+env:
+  global:
+    secure:
