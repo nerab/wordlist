@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Wordlist : Extraction of Oren Tirosh&#39;s mnemonic wordlist">
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/graph.css">
     <title>Wordlist</title>
   </head>
 
@@ -45,25 +46,36 @@
           <% end %>
         </ul>
 
-        <h2>Details</h2>
-        <p>
-          Overall, there are
-          <%
-            # http://stackoverflow.com/a/16574543/3212907
-            *all_but_last, last = @stats[:counts].to_a.map{|k,v| "#{v} words in #{k}"}
-          %>
-          <%= all_but_last.join(', ') %> and <%= last %>.
-        </p>
+        <h2>Distribution</h2>
 
-        <h3>By Word Length</h3>
+        <h3>Word Length</h3>
         <% @stats[:word_lengths].each do |download, stats| %>
           <h4><%= download %></h4>
           <ul>
             <% stats.keys.sort.each do |length| %>
               <% count = stats[length] %>
-              <li><%= count %> <a href="<%= length %>-char_<%= download %>">words with <%= length %> characters</a></li>
+              <li>
+                <%= count %> <a href="<%= length %>-<%= download %>">words with <%= length %> characters</a></li>
             <% end %>
           </ul>
+        <% end %>
+
+        <h3>Initial</h3>
+        <% @stats[:initial].each do |download, stats| %>
+          <h4><%= download %></h4>
+          <p>
+            <% stats.keys.sort.each do |initial| %>
+              <% count = stats[initial] %>
+              <a href="<%= initial %>-<%= download %>"><%= initial %></a>: <%= count %> ,
+            <% end %>
+          </p>
+
+          <% blanks = ('a'..'z').to_a - stats.keys %>
+          <% if blanks.empty?  %>
+            All initials are present in <%= download %>.
+          <% else %>
+            The initials <%= blanks.join(', ') %> are not present in <%= download %>.
+          <% end %>
         <% end %>
 
       </section>

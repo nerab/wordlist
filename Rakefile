@@ -36,14 +36,23 @@ task :json => 'src/wordlist.json' do
   end]
 
   @stats[:word_lengths] = {}
+  @stats[:initial] = {}
 
   DOWNLOADS.each do |download|
     @stats[:word_lengths][download] = Hash[@wordlist[download].group_by{|w| w.length}.map do |length, words|
-      File.open("#{length}-char_#{download}", "w+") do |f|
+      File.open("#{length}-#{download}", "w+") do |f|
         f.write(words.join("\n"))
       end
 
       [length, words.size]
+    end]
+
+    @stats[:initial][download] = Hash[@wordlist[download].group_by{|w| w[0]}.map do |initial, words|
+      File.open("#{initial}-#{download}", "w+") do |f|
+        f.write(words.join("\n"))
+      end
+
+      [initial, words.size]
     end]
   end
 
