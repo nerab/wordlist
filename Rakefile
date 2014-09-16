@@ -28,5 +28,12 @@ end
 
 task :json => 'src/wordlist.json' do
   @wordlist = JSON.parse(File.read('src/wordlist.json'))
-  @downloads = []
+
+  @stats = {}
+
+  @stats[:counts] = @wordlist['sources'].map do |src|
+    "#{@wordlist[src.first].size} words in #{src.first}"
+  end.join(', ')
+
+  puts @stats
 end
