@@ -34,17 +34,38 @@
           into several machine-consumable formats. The <a href="src/wordlist.json">JSON source</a> was created by extracting and cleaning the original files.
         </p>
 
-        <h2>Featured Downloads</h2>
+        <h2>All words</h2>
+        <p>
+          The lists are based on version <%= @wordlist['version'] %>.
+        </p>
+
         <ul>
-        <% DOWNLOADS.each do |download| %>
-          <li><a href="<%= download %>"><%= download %></a></li>
-        <% end %>
+          <% DOWNLOADS.each do |download| %>
+            <li><a href="<%= download %>"><%= download %></a> (<%= @stats[:counts][download] %> words)</li>
+          <% end %>
         </ul>
 
-        <h2>Statistics</h2>
-        <p>The lists are based on version <%= @wordlist['version'] %>.
-          There are <%= @stats[:counts] %>.
+        <h2>Details</h2>
+        <p>
+          Overall, there are
+          <%
+            # http://stackoverflow.com/a/16574543/3212907
+            *all_but_last, last = @stats[:counts].to_a.map{|k,v| "#{v} words in #{k}"}
+          %>
+          <%= all_but_last.join(', ') %> and <%= last %>.
         </p>
+
+        <h3>By Word Length</h3>
+        <% @stats[:word_lengths].each do |download, stats| %>
+          <h4><%= download %></h4>
+          <ul>
+            <% stats.keys.sort.each do |length| %>
+              <% count = stats[length] %>
+              <li><%= count %> <a href="<%= length %>-char_<%= download %>">words with <%= length %> characters</a></li>
+            <% end %>
+          </ul>
+        <% end %>
+
       </section>
 
     </div>

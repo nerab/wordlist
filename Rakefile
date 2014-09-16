@@ -5,7 +5,7 @@ require 'rake/clean'
 
 DOWNLOADS = ["words.txt", "rejects.txt"]
 WORK_PRODUCTS = DOWNLOADS + ["index.html"]
-CLOBBER.include(WORK_PRODUCTS)
+CLOBBER.include(WORK_PRODUCTS + Rake::FileList.new('*.txt'))
 
 task :default => WORK_PRODUCTS
 
@@ -31,9 +31,21 @@ task :json => 'src/wordlist.json' do
 
   @stats = {}
 
-  @stats[:counts] = @wordlist['sources'].map do |src|
-    "#{@wordlist[src.first].size} words in #{src.first}"
-  end.join(', ')
+  @stats[:counts] = Hash[@wordlist['sources'].map do |src|
+    [src.first, @wordlist[src.first].size]
+  end]
 
-  puts @stats
+  @stats[:word_lengths] = {}
+
+  DOWNLOADS.each do |download|
+    @stats[:word_lengths][download] = Hash[@wordlist[download].group_by{|w| w.length}.map do |length, words|
+      File.open("#{length}-char_#{download}", "w+") do |f|
+        f.write(words.join("\n"))
+      end
+
+      [length, words.size]
+    end]
+  end
+
+  # puts @stats
 end
